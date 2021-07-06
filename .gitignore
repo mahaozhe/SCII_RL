@@ -2,6 +2,6 @@
 Saves/
 __pycache__/
 Algorithms/__pycache__/
-NNModules/__pycache__/
+Networks/__pycache__/
 utils/__pycache__/
 NotRelated/__pycache__/

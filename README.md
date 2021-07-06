@@ -12,6 +12,7 @@ on [PySC2 Lib](https://github.com/deepmind/pysc2)
 
 - [main.py](./main.py): instantiate the Agent/Algorithm and an `SC2Env`, then run the training or evaluation
 - [Algorithms](./Algorithms/): algorithms/agents to learn and test
+- [Networks](./Networks/): neural networks
 - [utils](./utils/): some helpers
 - [NotRelated](./NotRelated/): some other files that are not related to the project
 
@@ -19,7 +20,7 @@ on [PySC2 Lib](https://github.com/deepmind/pysc2)
 
 In the project:
 
-- An `obs` is a dict with three keys: `minimap`, `screen` and `nonspatial`.
+- An `obs` is a dict with three keys: `minimap`, `screen` and `non_spatial`.
     - There are two kinds of `obs` with *numpy array* and *PyTorch tensor* data type, which are represented with `_np`
       and `_ts` suffix respectively.
     - `obs` is only for the agent/algorithm itself, for the states returned from `SC2Env`, we are using `state`.
@@ -31,9 +32,11 @@ In the project:
       , `action` and `logits` are exactly same in the project, and we reserve `action` only.
     - `action` (same as `logits`) is only for the agent/algorithm itself, for the actions to interact with `SC2Env`, we
       are using `function_call`.
-- The `nonspatial` argument in `obs` packaged from the state only contains `available_actions` for now.
+- The `non_spatial` argument in `obs` packaged from the state only contains `available_actions` for now.
 - The predicted arguments only contains `screen`, `screen2` and `minimap` for now. Based on the experience, no function
   has more than two arguments from them.
 - We assume the height and the width of the minimap and the screen are the same.
 - The models or checkpoints save in `save_path/model_name/token/MODELS_AND_INFORMATION` using the token to identify a
   single model or checkpoint
+- For some on-line algorithms that using trajectories instead of transitions, we define that finishing one target as a
+  trajectory, and finishing the episode as an epoch.

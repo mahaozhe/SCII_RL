@@ -66,10 +66,12 @@ def loop(agent, env, max_steps=200):
         action = [agent.step(timesteps[0])]
 
         if timesteps[0].last():
+            print("epoch finished with {} steps".format(total_steps))
             break
 
         total_steps += 1
         if total_steps > max_steps:
+            print("epoch finished for extending the maximal steps limit")
             break
 
         timesteps = env.step(action)
@@ -86,7 +88,8 @@ def main(args):
                  step_mul=16, visualize=True)
 
     try:
-        loop(agent, env)
+        for i in range(20):
+            loop(agent, env)
     except KeyboardInterrupt:
         pass
     finally:
