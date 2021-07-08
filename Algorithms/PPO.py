@@ -465,7 +465,7 @@ class PPO:
                             self.save_models(token='best')
                             best_epoch_reward = epoch_reward
                             best_epoch_reward_time = 1
-                        if epoch_reward == best_epoch_reward:
+                        elif epoch_reward == best_epoch_reward:
                             best_epoch_reward_time += 1
 
                         print("Episode: \033[34m{}\033[0m, cumulative rewards:\033[32m{}\033[0m, best rewards: "
