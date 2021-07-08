@@ -28,7 +28,7 @@ class PPOCriticNet(torch.nn.Module):
                                                nn.ReLU(),
                                                Dense2Conv())
 
-        self.layer_hidden = nn.Sequential(nn.Conv2d(32 * 5, 64, 3, stride=1, padding=1),
+        self.layer_hidden = nn.Sequential(nn.Conv2d(32 * 3, 64, 3, stride=1, padding=1),
                                           nn.ReLU(),
                                           nn.Conv2d(64, 1, 1),
                                           nn.ReLU(),
