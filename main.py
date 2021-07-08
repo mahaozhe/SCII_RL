@@ -15,6 +15,7 @@ MAP_NAME = "MoveToBeacon"
 MAP_SIZE = 64
 STEP_INTERVAL = 16
 VISUALIZE_FEATURE_MAPS = False
+logging.set_verbosity(logging.ERROR)
 
 # * for the training
 GAMMA = 0.99
