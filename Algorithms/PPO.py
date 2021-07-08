@@ -457,7 +457,7 @@ class PPO:
                         # ! clear the replay buffer after one-step optimization
                         self.replay_buffer.clear()
 
-                        epoch_reward = state.observation['score_cumulative'][0]
+                        epoch_reward = state_next.observation['score_cumulative'][0]
                         self.epoch_rewards.append(epoch_reward)
 
                         # save the best model
