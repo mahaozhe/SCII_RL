@@ -479,6 +479,7 @@ class PPO:
             if (epoch + 1) % self.check_point_save_epochs == 0:
                 self.save_models(token="{}".format(epoch + 1))
 
+        self.save_models(token='final')
         self.env.close()
 
     def save_models(self, token=''):

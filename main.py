@@ -28,13 +28,13 @@ LAMBDA = 0.97
 TARGET_KL = 0.1
 RANDOM_SEED = 1234
 
-MODEL_NAME = "MTB_V1"
-SAVE_EPOCHS = 100
-EPOCHS = 1000
+MODEL_NAME = "MTB_V1_RE"
+SAVE_EPOCHS = 500
+EPOCHS = 5000
 
 # * for restoring training
-RESTORE = False
-TOKEN = "final"
+RESTORE = True
+TOKEN = "5000"
 
 
 def main(args):
