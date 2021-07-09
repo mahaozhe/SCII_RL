@@ -509,8 +509,8 @@ class PPO:
 
         model_path = os.path.join(self.save_path, token)
 
-        self.actor.load_state_dict(torch.load(os.path.join(model_path, self.model_name + "_" + token + '_actor.pt')))
-        self.critic.load_state_dict(torch.load(os.path.join(model_path, self.model_name + "_" + token + '_critic.pt')))
+        self.actor.load_state_dict(torch.load(os.path.join(model_path, 'actor.pt')))
+        self.critic.load_state_dict(torch.load(os.path.join(model_path, 'critic.pt')))
 
         print('Models loaded successfully')
 
