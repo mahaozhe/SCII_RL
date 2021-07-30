@@ -37,7 +37,7 @@ MAX_TRAJECTORY_LENGTH = 1000
 
 # * for model training and saving
 SAVE_PATH = "./Saves/"
-MODEL_NAME = "CMAG_V1_RE"
+MODEL_NAME = "CMAG_V1"
 SAVE_EPOCHS = 500
 EPOCHS = 10000
 
