@@ -8,7 +8,7 @@ from pysc2.lib import actions
 
 # ! hyper-parameters
 # * for the environment
-MAP_NAME = "MoveToBeacon"
+MAP_NAME = "CollectMineralsAndGas"
 MAP_SIZE = 64
 STEP_INTERVAL = 16
 VISUALIZE_FEATURE_MAPS = False
@@ -37,7 +37,7 @@ MAX_TRAJECTORY_LENGTH = 1000
 
 # * for model training and saving
 SAVE_PATH = "./Saves/"
-MODEL_NAME = "MTB_V1_RE"
+MODEL_NAME = "CMAG_V1_RE"
 SAVE_EPOCHS = 500
 EPOCHS = 10000
 
