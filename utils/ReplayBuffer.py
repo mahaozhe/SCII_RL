@@ -5,13 +5,16 @@ To implement classes for replay buffer.
 import numpy as np
 import scipy.signal
 
+from collections import namedtuple, deque
+import random
+
 
 class BaseReplayBuffer:
     """
     The base class for all replay buffers.
     """
 
-    def __init__(self):
+    def __init__(self, *args):
         """
         initialization.
         """
@@ -30,15 +33,12 @@ class BaseReplayBuffer:
         """
         raise NotImplementedError
 
-    def sample(self):
+    def sample(self, *args):
         """
         Sample a batch of transitions/trajectories from the replay buffer
         :return: a batch of samples
         """
         raise NotImplementedError
-
-
-# PPOTrajectory = namedtuple('PPOTrajectory', ('obs', 'action', 'advantage', 'reward', 'return', 'value', 'log_probs'))
 
 
 class PPOReplayBuffer(BaseReplayBuffer):
@@ -146,3 +146,32 @@ class PPOReplayBuffer(BaseReplayBuffer):
         :return: the cumulative discount
         """
         return scipy.signal.lfilter([1], [1, float(-discount)], x[::-1], axis=0)[::-1]
+
+
+DDPGTransition = namedtuple('Transition', ('obs', 'action', 'obs_next', 'reward', 'done'))
+
+
+class DDPGReplayBuffer(BaseReplayBuffer):
+    def __init__(self, capacity):
+        self.buffer = deque([], maxlen=capacity)
+
+    def __len__(self):
+        return len(self.buffer)
+
+    def store(self, *args):
+        """
+        Append a sample
+        :param args: a sample in order of (obs, action, obs_next, reward, done)
+        """
+
+        self.buffer.append(DDPGTransition(*args))
+
+    def sample(self, batch_size):
+        """
+        To sample a batch of samples
+
+        :param batch_size: batch size
+        :return: a batch of sample
+        """
+
+        return random.sample(self.buffer, batch_size)

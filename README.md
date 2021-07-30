@@ -41,3 +41,8 @@ In the project:
 - For some on-line algorithms that using trajectories instead of transitions, we define that finishing one target as a
   trajectory, and finishing the episode as an epoch.
 - An `log_prob(s)` is a dict with three keys: `function_id`, `coordinate1` and `coordinate2`.
+
+
+## TODO
+
+- [ ] Add a random-selection in DDPG to break the deterministic

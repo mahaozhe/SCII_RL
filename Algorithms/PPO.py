@@ -30,8 +30,8 @@ class PPO:
 
     def __init__(self, env, actor, critic, device=None, gamma=0.99, clip_ratio=0.2, actor_lr=0.0003, critic_lr=0.001,
                  actor_train_iterations=80, critic_train_iterations=80, lamb=0.97, max_trajectory_length=1000,
-                 target_kl=0.01, seed=0, action_space=len(ACTIONS.FUNCTIONS), map_size=64, warmup_steps=1000,
-                 save_path="./Saves/", model_name='UnnamedModel', save_epochs=100):
+                 target_kl=0.01, seed=0, action_space=len(ACTIONS.FUNCTIONS), map_size=64, save_path="./Saves/",
+                 model_name='UnnamedModel', save_epochs=100):
         """
         Initialization.
 
@@ -51,7 +51,6 @@ class PPO:
         :param seed: the random seed
         :param action_space: the length of the action space
         :param map_size: the size of the map
-        :param warmup_steps: the warm up steps?
         :param save_path: the location to save the model
         :param model_name: a name for the training model
         :param save_epochs: how many epochs to save one check point
@@ -92,18 +91,13 @@ class PPO:
         # for the map size
         self.map_size = map_size
 
-        # ? for training warm-up steps
-        # self.warmup_steps = warmup_steps
-        # to record how many iterations
-        # self.iteration = 0
-
         # model and training information saved location
         self.model_name = model_name
         self.save_path = os.path.join(save_path, model_name)
         os.makedirs(self.save_path, exist_ok=True)
         self.check_point_save_epochs = save_epochs
 
-        # to record the epoch cumulative rewards
+        # to record the epoch rewards
         self.epoch_rewards = []
 
     def _state_2_obs_np(self, state):
@@ -456,7 +450,7 @@ class PPO:
                         elif epoch_reward == best_epoch_reward:
                             best_epoch_reward_time += 1
 
-                        print("Episode: \033[34m{}\033[0m, cumulative rewards:\033[32m{}\033[0m, best rewards: "
+                        print("Epoch: \033[34m{}\033[0m, epoch rewards:\033[32m{}\033[0m, best rewards: "
                               "\033[35m{}\033[0m with \033[33m{}\033[0m times".format(epoch + 1,
                                                                                       epoch_reward,
                                                                                       best_epoch_reward,
@@ -469,6 +463,8 @@ class PPO:
 
         self.save_models(token='final')
         self.env.close()
+
+        print("Training Completed!")
 
     def save_models(self, token=''):
         """
@@ -502,14 +498,23 @@ class PPO:
 
         print('Models loaded successfully')
 
-    def restore(self, token, episodes=1000):
+    def restore(self, token, episodes=1000, restore_token=1):
         """
         The function to restore the training.
 
         :param token: the token to identify the model
         :param episodes: number of episodes to continue training
-        :return:
+        :param restore_token: a token to identify the number of restores, if it (N) larger than 1,
+                                then load the model from "self.save_path/restore-(N-1)/token/"
         """
 
-        self.load_models(token)
+        assert isinstance(restore_token, int), "the restore_token parameter is NOT an int value"
+
+        if restore_token == 1:
+            self.load_models(token)
+        else:
+            self.load_models(os.path.join("restore-{}".format(restore_token - 1), token))
+
+        # change the save_path to a new folder
+        self.save_path = os.path.join(self.save_path, "restore-{}".format(restore_token))
         self.learn(episodes)
