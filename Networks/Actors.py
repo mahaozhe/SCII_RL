@@ -64,25 +64,35 @@ class PPOActorNet(torch.nn.Module):
         # TODO: change the log_prob
 
         if action is not None:
-            probable_function_id = nn.Softmax(dim=-1)(action['function_id'])
+            probable_function_id = nn.Softmax(dim=-1)(pol_function_id)
             probable_function_id = probable_function_id * obs_non_spatial
+            computed_distribution = Categorical(probable_function_id)
 
-            distribution = Categorical(probable_function_id)
+            given_function_id = nn.Softmax(dim=-1)(action['function_id'])
+            given_function_id_distribution = Categorical(given_function_id)
+            given_function_id = given_function_id_distribution.sample()
 
-            function_id = distribution.sample()
-            log_prob = {'function_id': distribution.log_prob(function_id)}
+            log_prob = {'function_id': computed_distribution.log_prob(given_function_id)}
 
             batch_size = action['function_id'].size()[0]
 
-            coordinate_position1 = nn.Softmax(dim=-1)(action['coordinate1'].view(batch_size, -1))
+            coordinate_position1 = nn.Softmax(dim=-1)(pol_coordinate1.view(batch_size, -1))
             coordinate_position1_distribution = Categorical(coordinate_position1)
-            coordinate_position1 = coordinate_position1_distribution.sample()
-            log_prob['coordinate1'] = coordinate_position1_distribution.log_prob(coordinate_position1)
 
-            coordinate_position2 = nn.Softmax(dim=-1)(action['coordinate2'].view(batch_size, -1))
+            given_coordinate_1 = nn.Softmax(dim=-1)(action['coordinate1'].view(batch_size, -1))
+            given_coordinate_1_distribution = Categorical(given_coordinate_1)
+            given_coordinate_1 = given_coordinate_1_distribution.sample()
+
+            log_prob['coordinate1'] = coordinate_position1_distribution.log_prob(given_coordinate_1)
+
+            coordinate_position2 = nn.Softmax(dim=-1)(pol_coordinate2.view(batch_size, -1))
             coordinate_position2_distribution = Categorical(coordinate_position2)
-            coordinate_position2 = coordinate_position2_distribution.sample()
-            log_prob['coordinate2'] = coordinate_position2_distribution.log_prob(coordinate_position2)
+
+            given_coordinate_2 = nn.Softmax(dim=-1)(action['coordinate2'].view(batch_size, -1))
+            given_coordinate_2_distribution = Categorical(given_coordinate_2)
+            given_coordinate_2 = given_coordinate_2_distribution.sample()
+
+            log_prob['coordinate2'] = coordinate_position2_distribution.log_prob(given_coordinate_2)
 
         else:
             log_prob = None

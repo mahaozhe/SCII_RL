@@ -24,6 +24,10 @@ from pysc2.env.sc2_env import SC2Env, Agent, Bot, Race, Difficulty
 # import absl
 from absl import app
 
+import sys
+
+np.set_printoptions(threshold=sys.maxsize)
+
 
 # define the agent, overriding the `step` function
 class MyAgent(base_agent.BaseAgent):
@@ -35,6 +39,15 @@ class MyAgent(base_agent.BaseAgent):
         super(MyAgent, self).step(obs)
 
         function_id = np.random.choice(obs.observation.available_actions)
+
+        unity_id_feature = obs.observation['feature_screen']['unit_type']
+        print("SCV pixels : {}".format(np.sum(unity_id_feature == 45)))
+
+        food_used = obs.observation['player']['food_used']
+        print("Food used : {}".format(food_used))
+
+        if food_used != 12:
+            print("000")
 
         args = [[np.random.randint(0, size) for size in arg.sizes] for arg in
                 self.action_spec.functions[function_id].args]
@@ -82,7 +95,7 @@ def main(args):
     agent = MyAgent()
 
     # define the environment
-    env = SC2Env(map_name="MoveToBeacon",
+    env = SC2Env(map_name="CollectMineralsAndGas",
                  players=[Agent(Race.terran)],
                  agent_interface_format=AgentInterfaceFormat(feature_dimensions=Dimensions(screen=64, minimap=64)),
                  step_mul=16, visualize=True)

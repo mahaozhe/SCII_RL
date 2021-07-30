@@ -95,7 +95,7 @@ class PPO:
         # ? for training warm-up steps
         # self.warmup_steps = warmup_steps
         # to record how many iterations
-        self.iteration = 0
+        # self.iteration = 0
 
         # model and training information saved location
         self.model_name = model_name
@@ -298,18 +298,8 @@ class PPO:
             for key, value in log_probs.items():
                 log_prob_ts[key].append(torch.as_tensor(value, dtype=torch.float32))
 
-        # return_ts = []
-        # advantage_ts = []
-        # log_prob_ts = []
-        #
-        # for i in range(len(transitions['returns'])):
-        #     return_ts.append(torch.as_tensor(transitions['returns'][i], dtype=torch.float32))
-        #     advantage_ts.append(torch.as_tensor(transitions['advantages'][i], dtype=torch.float32))
-        #     log_prob_ts.append(torch.as_tensor(transitions['log_probs'][i], dtype=torch.float32))
-
         return_ts = torch.as_tensor(transitions['returns'], dtype=torch.float32).to(self.device)
         advantage_ts = torch.as_tensor(transitions['advantages'], dtype=torch.float32).to(self.device)
-        # log_prob_ts = torch.as_tensor(transitions['log_probs'], dtype=torch.float32).to(self.device)
 
         # * implement the advantage normalization trick
         advantage_mean = torch.mean(advantage_ts)
@@ -335,14 +325,13 @@ class PPO:
         The function to compute the loss of the actor.
 
         :param transitions: the transitions returned from the replay buffer
-        :return: the loss of actor and the approximal kl
+        :return: the loss of actor and the approximated kl
         """
 
-        # TODO: in ACTOR, to make the coordinates included
         _, log_probs_new = self.actor(transitions['obs_ts'], transitions['action_ts'])
 
         # * the ratio and the approx_kl is the average over three keys: 'function_id', 'coordinate1' and 'coordinate2'
-        ratio = torch.zeros(log_probs_new['function_id'].size()[0]).to(self.device)
+        ratio = torch.zeros(log_probs_new['function_id'].size()[0], requires_grad=True).to(self.device)
         for key in log_probs_new:
             ratio += torch.exp(log_probs_new[key] - transitions['log_prob_ts'][key])
         ratio /= 3
@@ -351,7 +340,7 @@ class PPO:
         clipped_advantage = torch.clamp(ratio, 1 - self.clip_ratio, 1 + self.clip_ratio) * transitions['advantage_ts']
         actor_loss = -(torch.min(ratio * transitions['advantage_ts'], clipped_advantage)).mean()
 
-        approx_kl = torch.zeros(log_probs_new['function_id'].size()[0]).to(self.device)
+        approx_kl = torch.zeros(log_probs_new['function_id'].size()[0], requires_grad=True).to(self.device)
         for key in log_probs_new:
             approx_kl += transitions['log_prob_ts'][key] - log_probs_new[key]
         approx_kl = (approx_kl / 3).mean().item()
@@ -424,7 +413,6 @@ class PPO:
                 trajectory_steps += 1
 
                 obs_next_np = self._state_2_obs_np(state_next)
-
                 obs_np = copy.deepcopy(obs_next_np)
                 # ? state = copy.deepcopy(state_next)
 
