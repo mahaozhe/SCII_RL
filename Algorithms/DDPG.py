@@ -27,7 +27,7 @@ class DDPG:
     # TODO: abstract a base class
 
     def __init__(self, env, actor, critic, replay_buffer_size=10000, device=None, actor_lr=0.001, critic_lr=0.001,
-                 gamma=0.99, tau=0.005, batch_size=32, warmup_steps=1000, update_steps=1000, map_size=64, seed=0,
+                 gamma=0.99, tau=0.005, batch_size=32, warmup_steps=1000, soft_update_steps=1000, map_size=64, seed=0,
                  action_space=len(ACTIONS.FUNCTIONS), save_path="./Saves/", model_name='UnnamedModel', save_epochs=100):
         """
         Initialization.
@@ -43,7 +43,7 @@ class DDPG:
         :param tau: the soft update factor
         :param batch_size: batch size
         :param warmup_steps: warm up steps
-        :param update_steps: how many steps to update the target networks
+        :param soft_update_steps: how many steps to update the target networks
         :param map_size: the size of the map
         :param seed: a random seed
         :param action_space: the length of the action space
@@ -97,7 +97,7 @@ class DDPG:
 
         # for the soft update
         self.tau = tau
-        self.update_steps = update_steps
+        self.soft_update_steps = soft_update_steps
 
         # for training warm-up steps
         self.warmup_steps = warmup_steps
@@ -377,7 +377,7 @@ class DDPG:
         self.actor_optimizer.step()
 
         # update the target network
-        if self.iteration % self.update_steps == 0:
+        if self.iteration % self.soft_update_steps == 0:
             self.soft_update(self.target_actor, self.actor, self.tau)
             self.soft_update(self.target_critic, self.critic, self.tau)
 
