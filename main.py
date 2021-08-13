@@ -8,7 +8,7 @@ from pysc2.lib import actions
 
 # ! hyper-parameters
 # * for the environment
-MAP_NAME = "CollectMineralsAndGas"
+MAP_NAME = "MoveToBeacon"
 MAP_SIZE = 64
 STEP_INTERVAL = 16
 VISUALIZE_FEATURE_MAPS = False
@@ -26,7 +26,7 @@ REPLAY_BUFFER_SIZE = 10000
 TAU = 0.005
 BATCH_SIZE = 32
 WARM_STEPS = 1000
-UPDATE_STEPS = 1000
+SOFT_UPDATE_STEPS = 10
 # ** PPO
 CLIP_RATIO = 0.2
 ACTOR_TRAINING_ITERATIONS = 80
@@ -34,12 +34,17 @@ CRITIC_TRAINING_ITERATIONS = 80
 LAMBDA = 0.97
 TARGET_KL = 10
 MAX_TRAJECTORY_LENGTH = 1000
+# ** TD3
+TARGET_NOISE = 0.2
+NOISE_CLIP = 0.5
+UPDATE_STEPS = 50
+ACTOR_DELAY_STEPS = 2
 
 # * for model training and saving
 SAVE_PATH = "./Saves/"
-MODEL_NAME = "CMAG_V1"
-SAVE_EPOCHS = 500
-EPOCHS = 10000
+MODEL_NAME = "TD3-test"
+SAVE_EPOCHS = 50
+EPOCHS = 1000
 
 # * for restoring training
 RESTORE = False
@@ -47,7 +52,7 @@ TOKEN = "5000"
 RESTORE_TOKEN = 1
 
 # ! choosing one algorithm: now supports DDPG, PPO
-ALGORITHM = "DDPG"
+ALGORITHM = "TD3"
 
 
 def main(args):
@@ -77,7 +82,7 @@ def main(args):
                      tau=TAU,
                      batch_size=BATCH_SIZE,
                      warmup_steps=WARM_STEPS,
-                     update_steps=UPDATE_STEPS,
+                     soft_update_steps=SOFT_UPDATE_STEPS,
                      map_size=MAP_SIZE,
                      seed=RANDOM_SEED,
                      action_space=ACTION_SPACE,
@@ -105,6 +110,34 @@ def main(args):
                     seed=RANDOM_SEED,
                     action_space=ACTION_SPACE,
                     map_size=MAP_SIZE,
+                    save_path=SAVE_PATH,
+                    model_name=MODEL_NAME,
+                    save_epochs=SAVE_EPOCHS)
+
+    elif ALGORITHM == "TD3" or "td3":
+        from Algorithms.TD3 import TD3
+        from Networks.Actors import DDPGActorNet
+        from Networks.Critics import DDPGCriticNet
+
+        agent = TD3(env=env,
+                    actor=DDPGActorNet(),
+                    critic1=DDPGCriticNet(),
+                    critic2=DDPGCriticNet(),
+                    replay_buffer_size=REPLAY_BUFFER_SIZE,
+                    actor_lr=ACTOR_LEARNING_RATE,
+                    critic_lr=CRITIC_LEARNING_RATE,
+                    gamma=GAMMA,
+                    tau=TAU,
+                    target_noise=TARGET_NOISE,
+                    noise_clip=NOISE_CLIP,
+                    batch_size=BATCH_SIZE,
+                    warmup_steps=WARM_STEPS,
+                    update_steps=UPDATE_STEPS,
+                    actor_delay_steps=ACTOR_DELAY_STEPS,
+                    soft_update_steps=SOFT_UPDATE_STEPS,
+                    map_size=MAP_SIZE,
+                    seed=RANDOM_SEED,
+                    action_space=ACTION_SPACE,
                     save_path=SAVE_PATH,
                     model_name=MODEL_NAME,
                     save_epochs=SAVE_EPOCHS)
