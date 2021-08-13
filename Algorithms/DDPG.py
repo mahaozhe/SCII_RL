@@ -458,7 +458,7 @@ class DDPG:
         os.makedirs(save_path, exist_ok=True)
 
         torch.save(self.target_actor.state_dict(), os.path.join(save_path, 'actor.pt'))
-        torch.save(self.target_actor.state_dict(), os.path.join(save_path, 'critic.pt'))
+        torch.save(self.target_critic.state_dict(), os.path.join(save_path, 'critic.pt'))
 
         np.save(os.path.join(save_path, "epoch_rewards.npy"), self.epoch_rewards)
 
