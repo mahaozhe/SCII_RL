@@ -21,7 +21,7 @@ from utils.ReplayBuffer import DDPGReplayBuffer
 
 class TD3:
     """
-    The Deep Deterministic Policy Gradient (DDPG) Agent.
+    The Twin Delayed Deep Deterministic Policy Gradient (TD3) Agent.
     """
 
     # TODO: abstract a base class

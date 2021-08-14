@@ -67,7 +67,7 @@ def main(args):
                  visualize=VISUALIZE_FEATURE_MAPS)
 
     # instantiate the agent/algorithm
-    if ALGORITHM == "DDPG" or "ddpg":
+    if ALGORITHM.upper() == "DDPG":
         from Algorithms.DDPG import DDPG
         from Networks.Actors import DDPGActorNet
         from Networks.Critics import DDPGCriticNet
@@ -90,7 +90,7 @@ def main(args):
                      model_name=MODEL_NAME,
                      save_epochs=SAVE_EPOCHS)
 
-    elif ALGORITHM == "PPO" or "ppo":
+    elif ALGORITHM.upper() == "PPO":
         from Algorithms.PPO import PPO
         from Networks.Actors import PPOActorNet
         from Networks.Critics import PPOCriticNet
@@ -114,7 +114,7 @@ def main(args):
                     model_name=MODEL_NAME,
                     save_epochs=SAVE_EPOCHS)
 
-    elif ALGORITHM == "TD3" or "td3":
+    elif ALGORITHM.upper() == "TD3":
         from Algorithms.TD3 import TD3
         from Networks.Actors import DDPGActorNet
         from Networks.Critics import DDPGCriticNet
