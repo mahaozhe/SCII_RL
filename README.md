@@ -44,5 +44,3 @@ In the project:
 
 
 ## TODO
-
-- [ ] Add a random-selection in DDPG to break the deterministic
