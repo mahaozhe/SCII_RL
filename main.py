@@ -25,7 +25,7 @@ RANDOM_SEED = 1234
 REPLAY_BUFFER_SIZE = 10000
 TAU = 0.005
 BATCH_SIZE = 32
-WARM_STEPS = 1000
+WARM_STEPS = 8000
 SOFT_UPDATE_STEPS = 10
 # ** PPO
 CLIP_RATIO = 0.2
@@ -42,9 +42,9 @@ ACTOR_DELAY_STEPS = 2
 
 # * for model training and saving
 SAVE_PATH = "./Saves/"
-MODEL_NAME = "TD3-test"
-SAVE_EPOCHS = 50
-EPOCHS = 1000
+MODEL_NAME = "TD3-Flat"
+SAVE_EPOCHS = 300
+EPOCHS = 3000
 
 # * for restoring training
 RESTORE = False
@@ -147,9 +147,19 @@ def main(args):
         return
 
     if RESTORE:
+        print("\033[35mRESTORE training HIGHER-LEVEL model from {} token:\n"
+              "Algorithm:\t\t{}\n"
+              "Mini-Game:\t\t{}\033[0m".format(TOKEN, ALGORITHM, MAP_NAME))
         agent.restore(TOKEN, EPOCHS, RESTORE_TOKEN)
     else:
+        print("\033[35mStart training for {} epochs:\n"
+              "Algorithm:\t\t{}\n"
+              "Mini-Game:\t\t{}\033[0m".format(EPOCHS, ALGORITHM, MAP_NAME))
         agent.learn(EPOCHS)
+
+    print("\033[35mTraining Completed!\n"
+          "Algorithm:\t\t{}\n"
+          "Mini-Game:\t\t{}\033[0m".format(ALGORITHM, MAP_NAME))
 
 
 if __name__ == "__main__":
